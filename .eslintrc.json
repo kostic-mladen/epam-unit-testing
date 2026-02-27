@@ -15,5 +15,14 @@
         "prefer-arrow-callback": "off",
         "func-names": "off",
         "object-curly-newline": "off"
-    }
+    },
+    "overrides": [
+        {
+            "files": ["test/e2e-tests/**/*.js"],
+            "globals": {
+                "browser": "readonly",
+                "expect": "readonly"
+            }
+        }
+    ]
 }
