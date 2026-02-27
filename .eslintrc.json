@@ -19,10 +19,7 @@
     "overrides": [
         {
             "files": ["test/e2e-tests/**/*.js"],
-            "globals": {
-                "browser": "readonly",
-                "expect": "readonly"
-            }
+            "extends": ["plugin:wdio/recommended"]
         }
     ]
 }
