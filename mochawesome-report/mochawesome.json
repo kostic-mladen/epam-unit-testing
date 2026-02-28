@@ -5,9 +5,9 @@
     "passes": 1,
     "pending": 0,
     "failures": 0,
-    "start": "2026-02-26T12:37:57.741Z",
-    "end": "2026-02-26T12:37:57.758Z",
-    "duration": 17,
+    "start": "2026-02-27T20:11:44.063Z",
+    "end": "2026-02-27T20:11:44.071Z",
+    "duration": 8,
     "testsRegistered": 1,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "03fb6ebd-ddeb-4c88-b869-bde281d4ac4d",
+      "uuid": "0f7d4f19-0be1-4c74-90e0-9fa8f9a6f336",
       "title": "",
       "fullFile": "D:\\Epam JS\\epam-unit-testing\\test\\numbers-validator\\isNumberEven.spec.js",
       "file": "\\test\\numbers-validator\\isNumberEven.spec.js",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "a7deb6de-aa36-40cf-b13e-d201657f4531",
+          "uuid": "47ecd15d-a209-4982-88e1-cc30dfaa9915",
           "title": "isNumberEven",
           "fullFile": "D:\\Epam JS\\epam-unit-testing\\test\\numbers-validator\\isNumberEven.spec.js",
           "file": "\\test\\numbers-validator\\isNumberEven.spec.js",
@@ -38,7 +38,7 @@
               "title": "should return true if number is even",
               "fullTitle": "isNumberEven should return true if number is even",
               "timedOut": false,
-              "duration": 1,
+              "duration": 0,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,20 +47,20 @@
               "context": null,
               "code": "// Using 'expect' to assert that the 'isNumberEven' method returns true when\n// passed the even number 4. The '.to.be.equal(true)' is the actual assertion check.\nexpect(NumbersValidator.isNumberEven(4)).to.be.equal(true);",
               "err": {},
-              "uuid": "a834645a-09d2-4ca2-81a1-1fc1284eb054",
-              "parentUUID": "a7deb6de-aa36-40cf-b13e-d201657f4531",
+              "uuid": "1638c58d-6d0b-45b0-a9ae-2d297ff6b077",
+              "parentUUID": "47ecd15d-a209-4982-88e1-cc30dfaa9915",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "a834645a-09d2-4ca2-81a1-1fc1284eb054"
+            "1638c58d-6d0b-45b0-a9ae-2d297ff6b077"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 1,
+          "duration": 0,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000

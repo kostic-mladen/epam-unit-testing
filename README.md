@@ -1,20 +1,23 @@
 # EPAM Unit Testing — JavaScript
 
-A learning project for setting up a JavaScript unit testing framework using **Mocha**, **Chai**, and **c8** code coverage.
+A learning project for setting up JavaScript testing frameworks covering **unit tests** (Mocha + Chai + c8) and **end-to-end tests** (WebdriverIO).
 
 ## Project Structure
 
 ```
 epam-unit-testing/
 ├── app/
-│   └── numbers_validator.js     # Source code — NumbersValidator class
+│   └── numbers_validator.js          # Source code — NumbersValidator class
 ├── test/
-│   └── numbers-validator/
-│       └── isNumberEven.spec.js # Unit tests for isNumberEven method
+│   ├── numbers-validator/
+│   │   └── isNumberEven.spec.js      # Unit tests for isNumberEven method
+│   └── e2e-tests/
+│       └── home-page.spec.js         # E2E test — EPAM homepage title validation
 ├── .eslintignore
-├── .eslintrc.json               # ESLint config (airbnb-base)
-├── .mocharc.json                # Mocha config
-├── c8rc.json                    # c8 coverage thresholds
+├── .eslintrc.json                    # ESLint config (airbnb-base)
+├── .mocharc.json                     # Mocha config
+├── c8rc.json                         # c8 coverage thresholds
+├── wdio.conf.js                      # WebdriverIO config
 └── package.json
 ```
 
@@ -33,6 +36,8 @@ A static utility class with the following methods:
 
 ## Tech Stack
 
+### Unit Testing
+
 | Tool | Purpose |
 |---|---|
 | [Mocha](https://mochajs.org/) | Test runner |
@@ -40,6 +45,16 @@ A static utility class with the following methods:
 | [c8](https://github.com/bcoe/c8) | Code coverage (V8-native) |
 | [ESLint](https://eslint.org/) | Linter (airbnb-base style guide) |
 | [Mochawesome](https://github.com/adamgruber/mochawesome) | HTML test reporter |
+
+### E2E Testing
+
+| Tool | Purpose |
+|---|---|
+| [WebdriverIO](https://webdriver.io/) | E2E test framework |
+| [@wdio/local-runner](https://webdriver.io/docs/runner) | Runs tests locally |
+| [@wdio/mocha-framework](https://webdriver.io/docs/frameworks) | Mocha integration for WDIO |
+| [@wdio/spec-reporter](https://webdriver.io/docs/spec-reporter) | Terminal spec reporter |
+| [eslint-plugin-wdio](https://github.com/webdriverio/eslint-plugin-wdio) | ESLint rules + globals for WDIO |
 
 ## Getting Started
 
@@ -49,16 +64,37 @@ A static utility class with the following methods:
 npm install
 ```
 
-### Run tests
+### Run all tests
 
 ```bash
 npm test
 ```
 
-This will:
+This will run in sequence:
 1. **Lint** the code with ESLint (`pretest`)
-2. **Run** all tests with Mocha, collecting coverage data (`test`)
-3. **Display** the coverage report in the terminal (`posttest`)
+2. **Run** unit tests with Mocha, collecting coverage data (`test`)
+3. **Display** the coverage report, then **run** E2E tests in Chrome (`posttest`)
+
+### Run E2E tests only
+
+```bash
+npm run wdio
+```
+
+## E2E Configuration — `wdio.conf.js`
+
+| Option | Value |
+|---|---|
+| Runner | `local` |
+| Browser | Chrome |
+| Base URL | `https://www.epam.com` |
+| Framework | Mocha |
+| Reporter | spec |
+| Spec pattern | `test/e2e-tests/**/*.js` |
+| `waitforTimeout` | 10 000 ms |
+| `connectionRetryTimeout` | 120 000 ms |
+
+> ChromeDriver is managed automatically by WDIO v9 — no separate installation needed.
 
 ## Coverage Configuration — `c8rc.json`
 
@@ -74,9 +110,12 @@ Coverage reports are generated in `coverage/` (HTML) and printed to the terminal
 ## Test Configuration — `.mocharc.json`
 
 - **Spec pattern:** `test/**/*/*.spec.js`
+- **Ignore:** `test/e2e-tests/**` — E2E specs need the WDIO runtime (`browser` global); they run via `wdio` in `posttest`
 - **Reporter:** Mochawesome (HTML report saved to `mochawesome-report/`)
 
 ## Linting — `.eslintrc.json`
 
 - Extends **airbnb-base**
 - Environment: CommonJS, ES2021, Mocha
+- `wdio.conf.js` is excluded from linting via `.eslintignore`
+- E2E test files (`test/e2e-tests/**/*.js`) use an `overrides` block extending `plugin:wdio/recommended`, which declares all WDIO globals (`browser`, `$`, `$$`, `expect`, etc.) and applies WDIO-specific lint rules
