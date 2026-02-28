@@ -2,6 +2,30 @@
 
 A learning project for setting up JavaScript testing frameworks covering **unit tests** (Mocha + Chai + c8) and **end-to-end tests** (WebdriverIO).
 
+## Goal
+
+Learn how to set up and configure a professional JavaScript testing environment from scratch, including:
+- Unit testing with coverage reporting and linting
+- End-to-end browser testing with WebdriverIO
+- Clean Git workflow with conventional commits
+
+## Changelog
+
+### `test/first-e2e-test`
+- Added first E2E test — validates the title of `https://www.epam.com`
+- Configured `wdio.conf.js`: set `baseUrl` and `specs` path
+
+### `chore/wdio-setup`
+- Installed and configured WebdriverIO (`@wdio/cli`, `@wdio/local-runner`, `@wdio/mocha-framework`, `@wdio/spec-reporter`)
+- Added `wdio.conf.js` with Chrome, Mocha framework, and spec reporter
+- Added `eslint-plugin-wdio` for WDIO globals and lint rules
+- Added `wdio` and updated `posttest` scripts in `package.json`
+
+### `initial commit`
+- Project scaffolding: ESLint (airbnb-base), Mocha, Chai, c8, Mochawesome
+- `NumbersValidator` source class with unit tests
+- Coverage thresholds configured via `c8rc.json`
+
 ## Project Structure
 
 ```
@@ -24,8 +48,6 @@ epam-unit-testing/
 ## Source Code
 
 ### `NumbersValidator` — `app/numbers_validator.js`
-
-A static utility class with the following methods:
 
 | Method | Description |
 |---|---|
@@ -64,22 +86,34 @@ A static utility class with the following methods:
 npm install
 ```
 
-### Run all tests
+### Run unit tests only
 
 ```bash
 npm test
 ```
 
-This will run in sequence:
-1. **Lint** the code with ESLint (`pretest`)
-2. **Run** unit tests with Mocha, collecting coverage data (`test`)
-3. **Display** the coverage report, then **run** E2E tests in Chrome (`posttest`)
+This runs in sequence:
+1. **Lint** — ESLint (`pretest`)
+2. **Unit tests** — Mocha with coverage data collection (`test`)
+3. **Coverage report** — printed to terminal, then **E2E tests** run in Chrome (`posttest`)
 
 ### Run E2E tests only
 
 ```bash
 npm run wdio
 ```
+
+### Run linter
+
+```bash
+npm run lint
+```
+
+## E2E Tests
+
+| Test file | Suite | What it tests |
+|---|---|---|
+| `test/e2e-tests/home-page.spec.js` | first e2e test suite | Validates the title of `https://www.epam.com` |
 
 ## E2E Configuration — `wdio.conf.js`
 
@@ -90,7 +124,7 @@ npm run wdio
 | Base URL | `https://www.epam.com` |
 | Framework | Mocha |
 | Reporter | spec |
-| Spec pattern | `test/e2e-tests/**/*.js` |
+| Spec pattern | `test/e2e-tests/**/*.spec.js` |
 | `waitforTimeout` | 10 000 ms |
 | `connectionRetryTimeout` | 120 000 ms |
 
@@ -105,17 +139,17 @@ npm run wdio
 | Functions | 100% |
 | Lines | 80% |
 
-Coverage reports are generated in `coverage/` (HTML) and printed to the terminal (text).
+Coverage reports are generated in `coverage/` and printed to the terminal.
 
 ## Test Configuration — `.mocharc.json`
 
 - **Spec pattern:** `test/**/*/*.spec.js`
-- **Ignore:** `test/e2e-tests/**` — E2E specs need the WDIO runtime (`browser` global); they run via `wdio` in `posttest`
+- **Ignore:** `test/e2e-tests/**` — E2E specs require the WDIO runtime (`browser` global); they run via `wdio` in `posttest`
 - **Reporter:** Mochawesome (HTML report saved to `mochawesome-report/`)
 
 ## Linting — `.eslintrc.json`
 
 - Extends **airbnb-base**
 - Environment: CommonJS, ES2021, Mocha
-- `wdio.conf.js` is excluded from linting via `.eslintignore`
-- E2E test files (`test/e2e-tests/**/*.js`) use an `overrides` block extending `plugin:wdio/recommended`, which declares all WDIO globals (`browser`, `$`, `$$`, `expect`, etc.) and applies WDIO-specific lint rules
+- `wdio.conf.js` excluded from linting via `.eslintignore`
+- E2E test files use an `overrides` block extending `plugin:wdio/recommended`, which declares all WDIO globals (`browser`, `$`, `$$`, `expect`, etc.)

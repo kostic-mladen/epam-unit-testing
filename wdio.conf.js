@@ -21,7 +21,7 @@ exports.config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        // ToDo: define location for spec files here
+        './test/e2e-tests/**/*.spec.js'
     ],
     // Patterns to exclude.
     exclude: [
@@ -84,7 +84,7 @@ exports.config = {
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    // baseUrl: 'http://localhost:8080',
+    baseUrl: 'https://www.epam.com',
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
