@@ -13,7 +13,7 @@
   "scripts": {
     "pretest": "eslint ./",
     "test": "c8 --reporter=none mocha",
-    "posttest": "c8 report && wdio run ./wdio.conf.js",
+    "posttest": "c8 report",
     "lint": "eslint ./ --fix",
     "wdio": "wdio run ./wdio.conf.js"
   },
