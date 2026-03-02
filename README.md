@@ -11,6 +11,12 @@ Learn how to set up and configure a professional JavaScript testing environment 
 
 ## Changelog
 
+### `feature/wdio-basic-commands`
+- Added `basic-commands.spec.js` — E2E test suite for basic WebdriverIO commands (`$`, `$$`, `click()`, `setValue()`, `addValue()`, `isDisplayed()`, `isExisting()`, `waitForDisplayed()`, `waitForExist()`) on `practicetestautomation.com/practice-test-login/`
+- Added `"wdio"` npm script — runs all E2E tests (`wdio run ./wdio.conf.js`)
+- Added `"test:all"` npm script — runs unit tests then E2E tests sequentially
+- Updated `baseUrl` in `wdio.conf.js` to `https://practicetestautomation.com`
+
 ### `test/first-e2e-test`
 - Added first E2E test — validates the title of `https://www.epam.com`
 - Configured `wdio.conf.js`: set `baseUrl` and `specs` path
@@ -36,7 +42,8 @@ epam-unit-testing/
 │   ├── numbers-validator/
 │   │   └── isNumberEven.spec.js      # Unit tests for isNumberEven method
 │   └── e2e-tests/
-│       └── home-page.spec.js         # E2E test — EPAM homepage title validation
+│       ├── home-page.spec.js         # E2E test — EPAM homepage title validation
+│       └── basic-commands.spec.js    # E2E test — basic WDIO commands on practice login page
 ├── .eslintignore
 ├── .eslintrc.json                    # ESLint config (airbnb-base)
 ├── .mocharc.json                     # Mocha config
@@ -100,8 +107,22 @@ This runs in sequence:
 ### Run E2E tests only
 
 ```bash
-npm run wdio
+npm run wdio       # all E2E tests
+npm run epam       # only home-page tests
+npm run commands   # only basic-commands tests
 ```
+
+### Run everything (unit + E2E)
+
+```bash
+npm run test:all
+```
+
+This runs in sequence:
+1. **Lint** — ESLint (`pretest`)
+2. **Unit tests** — Mocha with coverage (`test`)
+3. **Coverage report** (`posttest`)
+4. **All E2E tests** — WebdriverIO in Chrome (`wdio`)
 
 ### Run linter
 
@@ -114,6 +135,7 @@ npm run lint
 | Test file | Suite | What it tests |
 |---|---|---|
 | `test/e2e-tests/home-page.spec.js` | first e2e test suite | Validates the title of `https://www.epam.com` |
+| `test/e2e-tests/basic-commands.spec.js` | basic commands test suite | Demonstrates `$`, `$$`, `click()`, `setValue()`, `addValue()`, `isDisplayed()`, `isExisting()`, `waitForDisplayed()`, `waitForExist()` on practice login page |
 
 ## E2E Configuration — `wdio.conf.js`
 
@@ -121,7 +143,7 @@ npm run lint
 |---|---|
 | Runner | `local` |
 | Browser | Chrome |
-| Base URL | `https://www.epam.com` |
+| Base URL | `https://practicetestautomation.com` |
 | Framework | Mocha |
 | Reporter | spec |
 | Spec pattern | `test/e2e-tests/**/*.spec.js` |
