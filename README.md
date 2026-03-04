@@ -21,6 +21,12 @@ Learn how to set up and configure a professional JavaScript testing environment 
 - Added `"test:all"` npm script — runs unit tests then E2E tests sequentially
 - Updated `baseUrl` in `wdio.conf.js` to `https://practicetestautomation.com`
 
+### `feature/wdio-basic-commands`
+- Added `basic-commands.spec.js` — E2E test suite for basic WebdriverIO commands (`$`, `$$`, `click()`, `setValue()`, `addValue()`, `isDisplayed()`, `isExisting()`, `waitForDisplayed()`, `waitForExist()`) on `practicetestautomation.com/practice-test-login/`
+- Added `"wdio"` npm script — runs all E2E tests (`wdio run ./wdio.conf.js`)
+- Added `"test:all"` npm script — runs unit tests then E2E tests sequentially
+- Updated `baseUrl` in `wdio.conf.js` to `https://practicetestautomation.com`
+
 ### `test/first-e2e-test`
 - Added first E2E test — validates the title of `https://www.epam.com`
 - Configured `wdio.conf.js`: set `baseUrl` and `specs` path
@@ -47,8 +53,7 @@ epam-unit-testing/
 │   │   └── isNumberEven.spec.js      # Unit tests for isNumberEven method
 │   └── e2e-tests/
 │       ├── home-page.spec.js         # E2E test — EPAM homepage title validation
-│       ├── basic-commands.spec.js    # E2E test — basic WDIO commands on practice login page
-│       └── advanced-commands.spec.js # E2E test — advanced WDIO commands
+│       └── basic-commands.spec.js    # E2E test — basic WDIO commands on practice login page
 ├── .eslintignore
 ├── .eslintrc.json                    # ESLint config (airbnb-base)
 ├── .mocharc.json                     # Mocha config
@@ -115,7 +120,6 @@ This runs in sequence:
 npm run wdio       # all E2E tests
 npm run epam       # only home-page tests
 npm run commands   # only basic-commands tests
-npm run advanced   # only advanced-commands tests
 ```
 
 ### Run everything (unit + E2E)
@@ -142,7 +146,6 @@ npm run lint
 |---|---|---|
 | `test/e2e-tests/home-page.spec.js` | first e2e test suite | Validates the title of `https://www.epam.com` |
 | `test/e2e-tests/basic-commands.spec.js` | basic commands test suite | Demonstrates `$`, `$$`, `click()`, `setValue()`, `addValue()`, `isDisplayed()`, `isExisting()`, `waitForDisplayed()`, `waitForExist()` on practice login page |
-| `test/e2e-tests/advanced-commands.spec.js` | advanced commands test suite | Demonstrates `execute()`, `executeAsync()`, `waitUntil()`, `setCookies()`, `getCookies()`, `deleteCookies()`, `getAttribute()`, `getProperty()` |
 
 ## E2E Configuration — `wdio.conf.js`
 
