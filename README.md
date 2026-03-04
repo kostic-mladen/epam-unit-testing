@@ -11,6 +11,10 @@ Learn how to set up and configure a professional JavaScript testing environment 
 
 ## Changelog
 
+### `feature/advanced-wdio-commands`
+- Added `advanced-commands.spec.js` — E2E test suite for advanced WebdriverIO commands (`execute()`, `executeAsync()`, `waitUntil()`, `setCookies()`, `getCookies()`, `deleteCookies()`, `getAttribute()`, `getProperty()`)
+- Added `"advanced"` npm script — runs only advanced-commands tests
+
 ### `feature/wdio-basic-commands`
 - Added `basic-commands.spec.js` — E2E test suite for basic WebdriverIO commands (`$`, `$$`, `click()`, `setValue()`, `addValue()`, `isDisplayed()`, `isExisting()`, `waitForDisplayed()`, `waitForExist()`) on `practicetestautomation.com/practice-test-login/`
 - Added `"wdio"` npm script — runs all E2E tests (`wdio run ./wdio.conf.js`)
