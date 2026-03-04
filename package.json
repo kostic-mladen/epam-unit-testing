@@ -1,10 +1,14 @@
 {
-  "name": "setup-epam-automation-testing-js-project",
+  "name": "epam-taf-js-practice",
   "version": "1.0.0",
   "description": "learning to setup the testing framework",
   "keywords": [
     "unit",
-    "test"
+    "test",
+    "automation",
+    "wdio",
+    "e2e",
+    "mocha"
   ],
   "license": "ISC",
   "author": "Mladen Kostic",
@@ -15,7 +19,10 @@
     "test": "c8 --reporter=none mocha",
     "posttest": "c8 report",
     "lint": "eslint ./ --fix",
-    "wdio": "wdio run ./wdio.conf.js"
+    "wdio": "wdio run ./wdio.conf.js",
+    "test:all": "npm test && npm run wdio",
+    "epam": "wdio run ./wdio.conf.js --spec test/e2e-tests/home-page.spec.js",
+    "commands": "wdio run ./wdio.conf.js --spec test/e2e-tests/basic-commands.spec.js"
   },
   "devDependencies": {
     "@wdio/cli": "^9.24.0",

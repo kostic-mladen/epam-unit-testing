@@ -6,7 +6,7 @@ describe('first e2e test suite', () => {
   it('should open www.epam.com', async () => {
     const expectedTitle = 'EPAM | Software Engineering & Product Development Services';
 
-    await browser.url('/');
+    await browser.url('https://www.epam.com');
     await expect(browser).toHaveTitle(expectedTitle);
   });
 });
