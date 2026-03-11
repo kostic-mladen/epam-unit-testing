@@ -22,7 +22,7 @@
     "wdio": "wdio run ./wdio.conf.js",
     "test:all": "npm test && npm run wdio",
     "epam": "wdio run ./wdio.conf.js --spec test/e2e-tests/home-page.spec.js",
-    "commands": "wdio run ./wdio.conf.js --spec test/e2e-tests/basic-commands.spec.js",
+    "basic": "wdio run ./wdio.conf.js --spec test/e2e-tests/basic-commands.spec.js",
     "advanced": "wdio run ./wdio.conf.js --spec test/e2e-tests/advanced-commands.spec.js"
   },
   "devDependencies": {

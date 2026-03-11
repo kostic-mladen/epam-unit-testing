@@ -11,6 +11,11 @@ Learn how to set up and configure a professional JavaScript testing environment 
 
 ## Changelog
 
+### `chore/capabilities-hooks-screenshots`
+- Updated `capabilities` in `wdio.conf.js` to run tests in both **Chrome** and **Firefox** simultaneously
+- Added `afterTest` hook — automatically captures a screenshot on test failure and saves it to `artifacts/screenshots/<test-title>.png`
+- Added `fs` (`existsSync`, `mkdirSync`) import to auto-create the screenshots directory if it doesn't exist
+
 ### `feature/advanced-wdio-commands`
 - Added `advanced-commands.spec.js` — E2E test suite for advanced WebdriverIO commands (`execute()`, `executeAsync()`, `waitUntil()`, `setCookies()`, `getCookies()`, `deleteCookies()`, `getAttribute()`, `getProperty()`)
 - Added `"advanced"` npm script — runs only advanced-commands tests
@@ -48,6 +53,8 @@ epam-unit-testing/
 │   └── e2e-tests/
 │       ├── home-page.spec.js         # E2E test — EPAM homepage title validation
 │       └── basic-commands.spec.js    # E2E test — basic WDIO commands on practice login page
+├── artifacts/
+│   └── screenshots/                  # Auto-created; failure screenshots saved here
 ├── .eslintignore
 ├── .eslintrc.json                    # ESLint config (airbnb-base)
 ├── .mocharc.json                     # Mocha config
@@ -113,7 +120,8 @@ This runs in sequence:
 ```bash
 npm run wdio       # all E2E tests
 npm run epam       # only home-page tests
-npm run commands   # only basic-commands tests
+npm run basic   # only basic-commands tests
+npm run advanced   # only advanced-comands tests
 ```
 
 ### Run everything (unit + E2E)
@@ -146,15 +154,22 @@ npm run lint
 | Option | Value |
 |---|---|
 | Runner | `local` |
-| Browser | Chrome |
+| Browsers | Chrome, Firefox (run in parallel) |
 | Base URL | `https://practicetestautomation.com` |
 | Framework | Mocha |
 | Reporter | spec |
 | Spec pattern | `test/e2e-tests/**/*.spec.js` |
+| `maxInstances` | 10 |
 | `waitforTimeout` | 10 000 ms |
 | `connectionRetryTimeout` | 120 000 ms |
 
-> ChromeDriver is managed automatically by WDIO v9 — no separate installation needed.
+> Browser drivers are managed automatically by WDIO v9 — no separate installation needed.
+
+### Hooks
+
+| Hook | Behaviour |
+|---|---|
+| `afterTest` | If a test fails, saves a screenshot to `artifacts/screenshots/<test-title>.png` and logs the filename to the console. The directory is created automatically if it doesn't exist. |
 
 ## Coverage Configuration — `c8rc.json`
 
