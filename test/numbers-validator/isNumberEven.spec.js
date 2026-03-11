@@ -1,21 +1,73 @@
-// Importing the 'expect' function from the 'chai' library to perform assertions
 const { expect } = require('chai');
-
-// Importing the NumbersValidator class from the relative path '../../app/numbers_validator'
-// so we can test its methods.
 const NumbersValidator = require('../../app/numbers_validator');
 
-// 'describe' is used to group related tests together into a test suite.
-// Here, it describes a suite of tests for the 'isNumberEven' method of NumbersValidator class.
 describe('isNumberEven', () => {
-  // 'it' is used for individual test cases - it includes the actual test.
-  // The string argument describes what the test should do.
   it('should return true if number is even', () => {
-    // Using 'expect' to assert that the 'isNumberEven' method returns true when
-    // passed the even number 4. The '.to.be.equal(true)' is the actual assertion check.
     expect(NumbersValidator.isNumberEven(4)).to.be.equal(true);
   });
 
-  // Additional tests would follow for different test cases, such as testing if an odd number
-  // returns false or if passing a non-number throws an error.
+  it('should return false if number is odd', () => {
+    expect(NumbersValidator.isNumberEven(3)).to.be.equal(false);
+  });
+
+  it('should throw an error if value is not a number', () => {
+    expect(() => NumbersValidator.isNumberEven('4')).to.throw(
+      Error,
+      '[4] is not of type "Number" it is of type "string"',
+    );
+  });
+});
+
+describe('getEvenNumbersFromArray', () => {
+  it('should return even numbers from array', () => {
+    expect(NumbersValidator.getEvenNumbersFromArray([1, 2, 3, 4])).to.deep.equal([2, 4]);
+  });
+
+  it('should throw an error if argument is not an array of numbers', () => {
+    expect(() => NumbersValidator.getEvenNumbersFromArray([1, '2', 3])).to.throw(
+      Error,
+      '[1,2,3] is not an array of "Numbers"',
+    );
+  });
+
+  it('should throw an error if argument is not an array', () => {
+    expect(() => NumbersValidator.getEvenNumbersFromArray('not an array')).to.throw(
+      Error,
+      '[not an array] is not an array of "Numbers"',
+    );
+  });
+});
+
+describe('isAllNumbers', () => {
+  it('should return true if all elements are numbers', () => {
+    expect(NumbersValidator.isAllNumbers([1, 2, 3])).to.be.equal(true);
+  });
+
+  it('should return false if some elements are not numbers', () => {
+    expect(NumbersValidator.isAllNumbers([1, '2', 3])).to.be.equal(false);
+  });
+
+  it('should throw an error if argument is not an array', () => {
+    expect(() => NumbersValidator.isAllNumbers('not an array')).to.throw(
+      Error,
+      '[not an array] is not an array',
+    );
+  });
+});
+
+describe('isInteger', () => {
+  it('should return true if number is an integer', () => {
+    expect(NumbersValidator.isInteger(4)).to.be.equal(true);
+  });
+
+  it('should return false if number is not an integer', () => {
+    expect(NumbersValidator.isInteger(4.5)).to.be.equal(false);
+  });
+
+  it('should throw an error if value is not a number', () => {
+    expect(() => NumbersValidator.isInteger('4')).to.throw(
+      Error,
+      '[4] is not a number',
+    );
+  });
 });

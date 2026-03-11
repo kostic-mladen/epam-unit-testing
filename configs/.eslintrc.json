@@ -18,7 +18,7 @@
     },
     "overrides": [
         {
-            "files": ["test/e2e-tests/**/*.js"],
+            "files": ["test/e2e-tests/**/*.js", "src/pages/**/*.js"],
             "extends": ["plugin:wdio/recommended"]
         }
     ]

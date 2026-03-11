@@ -15,17 +15,17 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "pretest": "eslint ./",
-    "test": "c8 --reporter=none mocha",
-    "posttest": "c8 report",
-    "lint": "eslint ./ --fix",
-    "wdio": "wdio run ./wdio.conf.js",
+    "pretest": "eslint ./ --config configs/.eslintrc.json --ignore-path configs/.eslintignore",
+    "test": "c8 --reporter=none --config ./configs/c8rc.json mocha --config ./configs/.mocharc.json",
+    "posttest": "c8 report --config ./configs/c8rc.json",
+    "lint": "eslint ./ --fix --config configs/.eslintrc.json --ignore-path configs/.eslintignore",
+    "wdio": "wdio run ./configs/wdio.conf.js",
     "test:all": "npm test && npm run wdio",
-    "epam": "wdio run ./wdio.conf.js --spec test/e2e-tests/home-page.spec.js",
-    "basic": "wdio run ./wdio.conf.js --spec test/e2e-tests/basic-commands.spec.js",
-    "advanced": "wdio run ./wdio.conf.js --spec test/e2e-tests/advanced-commands.spec.js",
-    "allure:open": "allure open allure-report"
-    },
+    "epam": "wdio run ./configs/wdio.conf.js --spec test/e2e-tests/home-page.spec.js",
+    "basic": "wdio run ./configs/wdio.conf.js --spec test/e2e-tests/basic-commands.spec.js",
+    "advanced": "wdio run ./configs/wdio.conf.js --spec test/e2e-tests/advanced-commands.spec.js",
+    "allure:open": "allure open reports/allure-report"
+  },
   "devDependencies": {
     "@wdio/allure-reporter": "^9.25.0",
     "@wdio/cli": "^9.24.0",

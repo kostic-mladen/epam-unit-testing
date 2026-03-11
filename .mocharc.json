@@ -1,5 +1,0 @@
-{
-  "spec": "test/**/*/*.spec.js",
-  "ignore": "test/e2e-tests/**",
-  "reporter": "mochawesome"
-}

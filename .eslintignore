@@ -1,6 +1,0 @@
-node_modules
-coverage
-mochawesome-report
-wdio.conf.js
-allure-report
-allure-results

@@ -1,74 +1,90 @@
-# EPAM Test Automation Framework practice
+# EPAM Test Automation Framework Practice
 
-A learning project for setting up JavaScript testing frameworks covering **unit tests** (Mocha + Chai + c8) and **end-to-end tests** (WebdriverIO).
+A learning project for setting up a professional JavaScript TAF covering **unit tests** (Mocha + Chai + c8) and **end-to-end tests** (WebdriverIO) using the **Page Object Model**.
 
 ## Goal
 
 Learn how to set up and configure a professional JavaScript testing environment from scratch, including:
 - Unit testing with coverage reporting and linting
 - End-to-end browser testing with WebdriverIO
-- Clean Git workflow with conventional commits
+- Page Object Model architecture
+- Clean project structure with separated concerns
 
-## Changelog
-
-### `feature/allure-report`
-- Integrated **Allure** reporting: installed `allure-commandline` and `@wdio/allure-reporter`
-- Configured Allure reporter in `wdio.conf.js` — results written to `allure-results/`
-- Added `onComplete` hook — auto-generates the Allure HTML report to `allure-report/` after every test run
-- Added `allure:open` npm script — serves and opens the report in the browser
-- Added `allure-report/` and `allure-results/` to `.eslintignore` to prevent linting generated files
-
-### `chore/capabilities-hooks-screenshots`
-- Updated `capabilities` in `wdio.conf.js` to run tests in both **Chrome** and **Firefox** simultaneously
-- Added `afterTest` hook — automatically captures a screenshot on test failure and saves it to `artifacts/screenshots/<test-title>.png`
-- Added `fs` (`existsSync`, `mkdirSync`) import to auto-create the screenshots directory if it doesn't exist
-
-### `feature/advanced-wdio-commands`
-- Added `advanced-commands.spec.js` — E2E test suite for advanced WebdriverIO commands (`execute()`, `executeAsync()`, `waitUntil()`, `setCookies()`, `getCookies()`, `deleteCookies()`, `getAttribute()`, `getProperty()`)
-- Added `"advanced"` npm script — runs only advanced-commands tests
-
-### `feature/wdio-basic-commands`
-- Added `basic-commands.spec.js` — E2E test suite for basic WebdriverIO commands (`$`, `$$`, `click()`, `setValue()`, `addValue()`, `isDisplayed()`, `isExisting()`, `waitForDisplayed()`, `waitForExist()`) on `practicetestautomation.com/practice-test-login/`
-- Added `"wdio"` npm script — runs all E2E tests (`wdio run ./wdio.conf.js`)
-- Added `"test:all"` npm script — runs unit tests then E2E tests sequentially
-- Updated `baseUrl` in `wdio.conf.js` to `https://practicetestautomation.com`
-
-### `test/first-e2e-test`
-- Added first E2E test — validates the title of `https://www.epam.com`
-- Configured `wdio.conf.js`: set `baseUrl` and `specs` path
-
-### `chore/wdio-setup`
-- Installed and configured WebdriverIO (`@wdio/cli`, `@wdio/local-runner`, `@wdio/mocha-framework`, `@wdio/spec-reporter`)
-- Added `wdio.conf.js` with Chrome, Mocha framework, and spec reporter
-- Added `eslint-plugin-wdio` for WDIO globals and lint rules
-- Added `wdio` and updated `posttest` scripts in `package.json`
-
-### `initial commit`
-- Project scaffolding: ESLint (airbnb-base), Mocha, Chai, c8, Mochawesome
-- `NumbersValidator` source class with unit tests
-- Coverage thresholds configured via `c8rc.json`
+---
 
 ## Project Structure
 
 ```
-epam-unit-testing/
+epam-taf-js-practice/
 ├── app/
-│   └── numbers_validator.js          # Source code — NumbersValidator class
+│   └── numbers_validator.js          # Application source — unit-tested business logic
+├── src/
+│   └── pages/
+│       ├── LoginPage.js              # Page Object — practice login page
+│       └── EpamHomePage.js          # Page Object — EPAM homepage
 ├── test/
 │   ├── numbers-validator/
-│   │   └── isNumberEven.spec.js      # Unit tests for isNumberEven method
+│   │   └── isNumberEven.spec.js      # Unit tests for NumbersValidator
 │   └── e2e-tests/
-│       ├── home-page.spec.js         # E2E test — EPAM homepage title validation
-│       └── basic-commands.spec.js    # E2E test — basic WDIO commands on practice login page
-├── artifacts/
-│   └── screenshots/                  # Auto-created; failure screenshots saved here
-├── .eslintignore
-├── .eslintrc.json                    # ESLint config (airbnb-base)
-├── .mocharc.json                     # Mocha config
-├── c8rc.json                         # c8 coverage thresholds
-├── wdio.conf.js                      # WebdriverIO config
-└── package.json
+│       ├── home-page.spec.js         # E2E — EPAM homepage title validation
+│       ├── basic-commands.spec.js    # E2E — basic WDIO commands
+│       └── advanced-commands.spec.js # E2E — advanced WDIO commands
+├── configs/
+│   ├── wdio.conf.js                  # WebdriverIO configuration
+│   ├── .mocharc.json                 # Mocha configuration
+│   ├── c8rc.json                     # c8 coverage thresholds
+│   ├── .eslintrc.json                # ESLint configuration (airbnb-base)
+│   └── .eslintignore                 # ESLint ignore patterns
+├── reports/                          # Auto-generated; gitignored
+│   ├── allure-results/               # Raw Allure test results
+│   ├── allure-report/                # Allure HTML report
+│   ├── coverage/                     # c8 coverage HTML report
+│   ├── mochawesome/                  # Mochawesome HTML report
+│   └── screenshots/                  # Failure screenshots
+├── .gitignore
+├── package.json
+└── README.md
 ```
+
+---
+
+## TAF Layers
+
+| Layer | Location | Role |
+|---|---|---|
+| **Application** | `app/` | Source code under unit test |
+| **Page Objects** | `src/pages/` | UI abstractions for E2E tests |
+| **Tests** | `test/` | Specs that exercise both layers |
+| **Config** | `configs/` | All tool configuration |
+| **Reports** | `reports/` | Generated output (gitignored) |
+
+---
+
+## Page Objects
+
+### `LoginPage` — `src/pages/LoginPage.js`
+
+Represents `practicetestautomation.com/practice-test-login/`.
+
+| Member | Type | Description |
+|---|---|---|
+| `username` | getter | `#username` input field |
+| `password` | getter | `#password` input field |
+| `submitButton` | getter | `#submit` button |
+| `errorMessage` | getter | `#error` element |
+| `open()` | method | Navigates to the login page |
+| `login(username, password)` | method | Fills credentials and submits |
+
+### `EpamHomePage` — `src/pages/EpamHomePage.js`
+
+Represents `https://www.epam.com`.
+
+| Member | Type | Description |
+|---|---|---|
+| `title` | getter | Expected page title string |
+| `open()` | method | Navigates to the EPAM homepage |
+
+---
 
 ## Source Code
 
@@ -76,10 +92,12 @@ epam-unit-testing/
 
 | Method | Description |
 |---|---|
-| `isNumberEven(number)` | Returns `true` if the number is even, throws if not a number |
-| `getEvenNumbersFromArray(arr)` | Returns only even numbers from an array, throws if input is invalid |
-| `isAllNumbers(arr)` | Returns `true` if every element in the array is a number, throws if not an array |
-| `isInteger(n)` | Returns `true` if the value is an integer, throws if not a number |
+| `isNumberEven(number)` | Returns `true` if even; throws if not a number |
+| `getEvenNumbersFromArray(arr)` | Returns only even numbers from array; throws if invalid input |
+| `isAllNumbers(arr)` | Returns `true` if every element is a number; throws if not an array |
+| `isInteger(n)` | Returns `true` if value is an integer; throws if not a number |
+
+---
 
 ## Tech Stack
 
@@ -90,7 +108,7 @@ epam-unit-testing/
 | [Mocha](https://mochajs.org/) | Test runner |
 | [Chai](https://www.chaijs.com/) | Assertion library |
 | [c8](https://github.com/bcoe/c8) | Code coverage (V8-native) |
-| [ESLint](https://eslint.org/) | Linter (airbnb-base style guide) |
+| [ESLint](https://eslint.org/) | Linter (airbnb-base) |
 | [Mochawesome](https://github.com/adamgruber/mochawesome) | HTML test reporter |
 
 ### E2E Testing
@@ -102,8 +120,10 @@ epam-unit-testing/
 | [@wdio/mocha-framework](https://webdriver.io/docs/frameworks) | Mocha integration for WDIO |
 | [@wdio/spec-reporter](https://webdriver.io/docs/spec-reporter) | Terminal spec reporter |
 | [@wdio/allure-reporter](https://webdriver.io/docs/allure-reporter) | Allure results writer |
-| [allure-commandline](https://github.com/allure-framework/allure2) | Generates and serves Allure HTML report |
-| [eslint-plugin-wdio](https://github.com/webdriverio/eslint-plugin-wdio) | ESLint rules + globals for WDIO |
+| [allure-commandline](https://github.com/allure-framework/allure2) | Generates Allure HTML report |
+| [eslint-plugin-wdio](https://github.com/webdriverio/eslint-plugin-wdio) | ESLint globals for WDIO |
+
+---
 
 ## Getting Started
 
@@ -113,24 +133,30 @@ epam-unit-testing/
 npm install
 ```
 
-### Run unit tests only
+### Run unit tests
 
 ```bash
 npm test
 ```
 
-This runs in sequence:
+Runs in sequence:
 1. **Lint** — ESLint (`pretest`)
-2. **Unit tests** — Mocha with coverage data collection (`test`)
-3. **Coverage report** — printed to terminal, then **E2E tests** run in Chrome (`posttest`)
+2. **Unit tests** — Mocha with coverage collection (`test`)
+3. **Coverage report** — printed to terminal and saved to `reports/coverage/` (`posttest`)
 
-### Run E2E tests only
+### Run E2E tests
 
 ```bash
-npm run wdio       # all E2E tests (auto-generates Allure report on completion)
+npm run wdio       # all E2E tests (Allure report auto-generated on completion)
 npm run epam       # only home-page tests
 npm run basic      # only basic-commands tests
 npm run advanced   # only advanced-commands tests
+```
+
+### Run everything (unit + E2E)
+
+```bash
+npm run test:all
 ```
 
 ### View Allure report
@@ -139,39 +165,34 @@ npm run advanced   # only advanced-commands tests
 npm run allure:open
 ```
 
-The Allure HTML report is auto-generated after every `wdio` run. Use this command to open it in the browser.
+Opens `reports/allure-report/` in the browser. The report is auto-generated after every `wdio` run.
 
-### Run everything (unit + E2E)
-
-```bash
-npm run test:all
-```
-
-This runs in sequence:
-1. **Lint** — ESLint (`pretest`)
-2. **Unit tests** — Mocha with coverage (`test`)
-3. **Coverage report** (`posttest`)
-4. **All E2E tests** — WebdriverIO in Chrome (`wdio`)
-
-### Run linter
+### Fix lint issues
 
 ```bash
 npm run lint
 ```
 
+---
+
 ## E2E Tests
 
-| Test file | Suite | What it tests |
+| File | Suite | Commands covered |
 |---|---|---|
-| `test/e2e-tests/home-page.spec.js` | first e2e test suite | Validates the title of `https://www.epam.com` |
-| `test/e2e-tests/basic-commands.spec.js` | basic commands test suite | Demonstrates `$`, `$$`, `click()`, `setValue()`, `addValue()`, `isDisplayed()`, `isExisting()`, `waitForDisplayed()`, `waitForExist()` on practice login page |
+| `test/e2e-tests/home-page.spec.js` | first e2e test suite | Page navigation, title assertion |
+| `test/e2e-tests/basic-commands.spec.js` | basic commands test suite | `$`, `$$`, `click()`, `setValue()`, `addValue()`, `isDisplayed()`, `isExisting()`, `waitForDisplayed()`, `waitForExist()` |
+| `test/e2e-tests/advanced-commands.spec.js` | advanced commands test suite | `execute()`, `executeAsync()`, `waitUntil()`, `setCookies()`, `getCookies()`, `deleteCookies()`, `getAttribute()`, `getProperty()` |
 
-## E2E Configuration — `wdio.conf.js`
+---
+
+## Configuration
+
+### `configs/wdio.conf.js`
 
 | Option | Value |
 |---|---|
 | Runner | `local` |
-| Browsers | Chrome, Firefox (run in parallel) |
+| Browsers | Chrome, Firefox (parallel) |
 | Base URL | `https://practicetestautomation.com` |
 | Framework | Mocha |
 | Reporters | spec, Allure |
@@ -182,14 +203,14 @@ npm run lint
 
 > Browser drivers are managed automatically by WDIO v9 — no separate installation needed.
 
-### Hooks
+#### Hooks
 
 | Hook | Behaviour |
 |---|---|
-| `afterTest` | If a test fails, saves a screenshot to `artifacts/screenshots/<test-title>.png` and logs the filename to the console. The directory is created automatically if it doesn't exist. |
-| `onComplete` | After all tests finish, auto-generates the Allure HTML report from `allure-results/` into `allure-report/`. |
+| `afterTest` | On test failure, saves a screenshot to `reports/screenshots/<test-title>.png`. Directory is created automatically. |
+| `onComplete` | Generates the Allure HTML report from `reports/allure-results/` into `reports/allure-report/`. |
 
-## Coverage Configuration — `c8rc.json`
+### `configs/c8rc.json`
 
 | Metric | Threshold |
 |---|---|
@@ -198,17 +219,61 @@ npm run lint
 | Functions | 100% |
 | Lines | 80% |
 
-Coverage reports are generated in `coverage/` and printed to the terminal.
+Report output: `reports/coverage/`
 
-## Test Configuration — `.mocharc.json`
+### `configs/.mocharc.json`
 
-- **Spec pattern:** `test/**/*/*.spec.js`
-- **Ignore:** `test/e2e-tests/**` — E2E specs require the WDIO runtime (`browser` global); they run via `wdio` in `posttest`
-- **Reporter:** Mochawesome (HTML report saved to `mochawesome-report/`)
+| Option | Value |
+|---|---|
+| Spec pattern | `test/**/*/*.spec.js` |
+| Ignore | `test/e2e-tests/**` |
+| Reporter | Mochawesome → `reports/mochawesome/` |
 
-## Linting — `.eslintrc.json`
+E2E specs are excluded because they require the WDIO runtime (`browser` global) and are run separately via `npm run wdio`.
+
+### `configs/.eslintrc.json`
 
 - Extends **airbnb-base**
 - Environment: CommonJS, ES2021, Mocha
-- `wdio.conf.js`, `allure-report/`, and `allure-results/` excluded from linting via `.eslintignore`
-- E2E test files use an `overrides` block extending `plugin:wdio/recommended`, which declares all WDIO globals (`browser`, `$`, `$$`, `expect`, etc.)
+- `test/e2e-tests/**` and `src/pages/**` use an `overrides` block with `plugin:wdio/recommended` for WDIO globals (`browser`, `$`, `$$`, `expect`, etc.)
+- `configs/wdio.conf.js` and `reports/` excluded via `configs/.eslintignore`
+
+---
+
+## Changelog
+
+### `chore/TAF-layers`
+- Refactored into **Page Object Model**: added `src/pages/LoginPage.js` and `src/pages/EpamHomePage.js`
+- Moved all config files into `configs/` folder
+- Consolidated all generated output (`allure-results`, `allure-report`, `coverage`, `mochawesome`, `screenshots`) under `reports/`
+- Simplified `.gitignore` to a single `reports` entry
+- Removed redundant comments and dead code across all files
+
+### `feature/allure-report`
+- Integrated Allure reporting (`allure-commandline`, `@wdio/allure-reporter`)
+- Added `onComplete` hook — auto-generates Allure HTML report after every run
+- Added `allure:open` npm script
+
+### `chore/capabilities-hooks-screenshots`
+- Added Firefox capability — tests now run in Chrome and Firefox in parallel
+- Added `afterTest` hook — captures screenshot on test failure
+
+### `feature/advanced-wdio-commands`
+- Added `advanced-commands.spec.js` with 8 advanced WDIO command tests
+- Added `advanced` npm script
+
+### `feature/wdio-basic-commands`
+- Added `basic-commands.spec.js` with 9 basic WDIO command tests
+- Added `wdio`, `basic`, `test:all` npm scripts
+
+### `test/first-e2e-test`
+- Added first E2E test validating `https://www.epam.com` title
+
+### `chore/wdio-setup`
+- Installed and configured WebdriverIO with Mocha framework and spec reporter
+- Added `eslint-plugin-wdio`
+
+### `initial commit`
+- Project scaffolding: ESLint (airbnb-base), Mocha, Chai, c8, Mochawesome
+- `NumbersValidator` source class with unit tests
+- Coverage thresholds via `c8rc.json`

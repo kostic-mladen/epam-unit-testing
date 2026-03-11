@@ -1,12 +1,8 @@
-/**
- * 1. visit www.epam.com
- * 2. validate the page's title
- */
+const epamHomePage = require('../../src/pages/EpamHomePage');
+
 describe('first e2e test suite', () => {
   it('should open www.epam.com', async () => {
-    const expectedTitle = 'EPAM | Software Engineering & Product Development Services';
-
-    await browser.url('https://www.epam.com');
-    await expect(browser).toHaveTitle(expectedTitle);
+    await epamHomePage.open();
+    await expect(browser).toHaveTitle(epamHomePage.title);
   });
 });
