@@ -1,12 +1,13 @@
 # EPAM Test Automation Framework Practice
 
-A learning project for setting up a professional JavaScript TAF covering **unit tests** (Mocha + Chai + c8) and **end-to-end tests** (WebdriverIO) using the **Page Object Model**.
+A learning project for setting up a professional JavaScript TAF covering **unit tests** (Mocha + Chai + c8), **end-to-end tests** (WebdriverIO + Mocha), and **BDD tests** (WebdriverIO + Cucumber) using the **Page Object Model**.
 
 ## Goal
 
 Learn how to set up and configure a professional JavaScript testing environment from scratch, including:
 - Unit testing with coverage reporting and linting
 - End-to-end browser testing with WebdriverIO
+- BDD testing with Cucumber and Gherkin feature files
 - Page Object Model architecture
 - Clean project structure with separated concerns
 
@@ -21,16 +22,27 @@ epam-taf-js-practice/
 ├── src/
 │   └── pages/
 │       ├── LoginPage.js              # Page Object — practice login page
-│       └── EpamHomePage.js          # Page Object — EPAM homepage
+│       └── EpamHomePage.js           # Page Object — EPAM homepage
 ├── test/
 │   ├── numbers-validator/
 │   │   └── isNumberEven.spec.js      # Unit tests for NumbersValidator
-│   └── e2e-tests/
-│       ├── home-page.spec.js         # E2E — EPAM homepage title validation
-│       ├── basic-commands.spec.js    # E2E — basic WDIO commands
-│       └── advanced-commands.spec.js # E2E — advanced WDIO commands
+│   ├── e2e-tests/
+│   │   ├── home-page.spec.js         # E2E — EPAM homepage title validation
+│   │   ├── basic-commands.spec.js    # E2E — basic WDIO commands
+│   │   └── advanced-commands.spec.js # E2E — advanced WDIO commands
+│   ├── features/
+│   │   ├── epam-home.feature         # BDD — EPAM homepage
+│   │   ├── browser-basic.feature     # BDD — basic browser commands
+│   │   └── browser-advanced.feature  # BDD — advanced browser commands
+│   ├── step-definitions/
+│   │   ├── browser-commands.steps.js # Steps for browser-basic & browser-advanced
+│   │   └── epam-home.steps.js        # Steps for epam-home
+│   └── support/
+│       ├── world.js                  # Custom Cucumber World class
+│       └── hooks.js                  # Cucumber Before/After hooks
 ├── configs/
-│   ├── wdio.conf.js                  # WebdriverIO configuration
+│   ├── wdio.conf.js                  # WebdriverIO config (Mocha)
+│   ├── wdio.cucumber.conf.js         # WebdriverIO config (Cucumber)
 │   ├── .mocharc.json                 # Mocha configuration
 │   ├── c8rc.json                     # c8 coverage thresholds
 │   ├── .eslintrc.json                # ESLint configuration (airbnb-base)
@@ -53,8 +65,11 @@ epam-taf-js-practice/
 | Layer | Location | Role |
 |---|---|---|
 | **Application** | `app/` | Source code under unit test |
-| **Page Objects** | `src/pages/` | UI abstractions for E2E tests |
-| **Tests** | `test/` | Specs that exercise both layers |
+| **Page Objects** | `src/pages/` | UI abstractions for E2E and BDD tests |
+| **E2E Tests** | `test/e2e-tests/` | Mocha specs exercising WDIO commands |
+| **Feature Files** | `test/features/` | Gherkin scenarios (BDD) |
+| **Step Definitions** | `test/step-definitions/` | Cucumber step implementations |
+| **Support** | `test/support/` | World class and hooks |
 | **Config** | `configs/` | All tool configuration |
 | **Reports** | `reports/` | Generated output (gitignored) |
 
@@ -111,7 +126,7 @@ Represents `https://www.epam.com`.
 | [ESLint](https://eslint.org/) | Linter (airbnb-base) |
 | [Mochawesome](https://github.com/adamgruber/mochawesome) | HTML test reporter |
 
-### E2E Testing
+### E2E Testing (Mocha)
 
 | Tool | Purpose |
 |---|---|
@@ -121,7 +136,14 @@ Represents `https://www.epam.com`.
 | [@wdio/spec-reporter](https://webdriver.io/docs/spec-reporter) | Terminal spec reporter |
 | [@wdio/allure-reporter](https://webdriver.io/docs/allure-reporter) | Allure results writer |
 | [allure-commandline](https://github.com/allure-framework/allure2) | Generates Allure HTML report |
-| [eslint-plugin-wdio](https://github.com/webdriverio/eslint-plugin-wdio) | ESLint globals for WDIO |
+
+### BDD Testing (Cucumber)
+
+| Tool | Purpose |
+|---|---|
+| [@wdio/cucumber-framework](https://webdriver.io/docs/frameworks#using-cucumber) | Cucumber integration for WDIO |
+| [@cucumber/cucumber](https://github.com/cucumber/cucumber-js) | Cucumber.js core |
+| [cross-env](https://github.com/kentcdodds/cross-env) | Cross-platform env variables (tag filtering) |
 
 ---
 
@@ -144,19 +166,28 @@ Runs in sequence:
 2. **Unit tests** — Mocha with coverage collection (`test`)
 3. **Coverage report** — printed to terminal and saved to `reports/coverage/` (`posttest`)
 
-### Run E2E tests
+### Run E2E tests (Mocha)
 
 ```bash
-npm run wdio       # all E2E tests (Allure report auto-generated on completion)
+npm run wdio       # all E2E tests
 npm run epam       # only home-page tests
 npm run basic      # only basic-commands tests
 npm run advanced   # only advanced-commands tests
 ```
 
-### Run everything (unit + E2E)
+### Run BDD tests (Cucumber)
 
 ```bash
-npm run test:all
+npm run wdio:bdd             # all feature files (Chrome + Firefox)
+npm run wdio:bdd:smoke       # only @smoke scenarios
+npm run wdio:bdd:regression  # only @regression scenarios
+```
+
+### Run everything
+
+```bash
+npm run test:all      # unit + E2E (Mocha)
+npm run test:all:bdd  # unit + BDD (Cucumber)
 ```
 
 ### View Allure report
@@ -165,7 +196,7 @@ npm run test:all
 npm run allure:open
 ```
 
-Opens `reports/allure-report/` in the browser. The report is auto-generated after every `wdio` run.
+Opens `reports/allure-report/` in the browser. The report is auto-generated after every `wdio` or `wdio:bdd` run.
 
 ### Fix lint issues
 
@@ -175,7 +206,37 @@ npm run lint
 
 ---
 
-## E2E Tests
+## BDD Feature Files
+
+| Feature file | Scenarios | Tags |
+|---|---|---|
+| `test/features/epam-home.feature` | EPAM homepage title validation | `@smoke` |
+| `test/features/browser-basic.feature` | Element queries, clicks, setValue, addValue, waiting | `@smoke`, `@regression` |
+| `test/features/browser-advanced.feature` | JS execution, cookies, attributes, properties | `@regression` |
+
+### Tags
+
+| Tag | Purpose |
+|---|---|
+| `@smoke` | Critical path — fast sanity check |
+| `@regression` | Full regression suite |
+| `@negative` | Error and validation scenarios |
+
+### Cucumber configuration — `configs/wdio.cucumber.conf.js`
+
+| Option | Value |
+|---|---|
+| Browsers | Chrome, Firefox (parallel) |
+| `maxInstances` | 2 |
+| Base URL | `https://practicetestautomation.com` |
+| Reporter | spec + Allure (`useCucumberStepReporter: true`) |
+| Clean results before run | `onPrepare` hook — deletes `reports/allure-results/` so every run starts fresh |
+| Screenshot on failure | `afterScenario` hook — saves to `reports/screenshots/` and attaches to Allure |
+| CI headless | Set `CI=true` env variable |
+
+---
+
+## E2E Tests (Mocha)
 
 | File | Suite | Commands covered |
 |---|---|---|
@@ -199,16 +260,13 @@ npm run lint
 | Spec pattern | `test/e2e-tests/**/*.spec.js` |
 | `maxInstances` | 10 |
 | `waitforTimeout` | 10 000 ms |
-| `connectionRetryTimeout` | 120 000 ms |
-
-> Browser drivers are managed automatically by WDIO v9 — no separate installation needed.
 
 #### Hooks
 
 | Hook | Behaviour |
 |---|---|
-| `afterTest` | On test failure, saves a screenshot to `reports/screenshots/<test-title>.png`. Directory is created automatically. |
-| `onComplete` | Generates the Allure HTML report from `reports/allure-results/` into `reports/allure-report/`. |
+| `afterTest` | On test failure, saves a screenshot to `reports/screenshots/<test-title>.png` |
+| `onComplete` | Generates the Allure HTML report from `reports/allure-results/` |
 
 ### `configs/c8rc.json`
 
@@ -229,25 +287,31 @@ Report output: `reports/coverage/`
 | Ignore | `test/e2e-tests/**` |
 | Reporter | Mochawesome → `reports/mochawesome/` |
 
-E2E specs are excluded because they require the WDIO runtime (`browser` global) and are run separately via `npm run wdio`.
+E2E specs are excluded because they require the WDIO runtime (`browser` global).
 
 ### `configs/.eslintrc.json`
 
 - Extends **airbnb-base**
 - Environment: CommonJS, ES2021, Mocha
-- `test/e2e-tests/**` and `src/pages/**` use an `overrides` block with `plugin:wdio/recommended` for WDIO globals (`browser`, `$`, `$$`, `expect`, etc.)
-- `configs/wdio.conf.js` and `reports/` excluded via `configs/.eslintignore`
+- `test/e2e-tests/**`, `src/pages/**`, `test/step-definitions/**` and `test/support/**` use `plugin:wdio/recommended` for WDIO globals (`browser`, `$`, `$$`, `expect`, etc.)
 
 ---
 
 ## Changelog
 
+### `feature/BDD-framework`
+- Added Cucumber BDD framework alongside the existing Mocha E2E setup
+- Added `@wdio/cucumber-framework`, `@cucumber/cucumber`, `cross-env` dependencies
+- Added `configs/wdio.cucumber.conf.js` — Cucumber WDIO config (Chrome + Firefox, Allure with `useCucumberStepReporter`)
+- Added 3 feature files: `epam-home.feature`, `browser-basic.feature`, `browser-advanced.feature`
+- Added step definitions: `browser-commands.steps.js`, `epam-home.steps.js`
+- Added `test/support/world.js` (CustomWorld) and `test/support/hooks.js`
+- Added `wdio:bdd`, `wdio:bdd:smoke`, `wdio:bdd:regression`, `test:all:bdd` npm scripts
+
 ### `chore/TAF-layers`
 - Refactored into **Page Object Model**: added `src/pages/LoginPage.js` and `src/pages/EpamHomePage.js`
 - Moved all config files into `configs/` folder
-- Consolidated all generated output (`allure-results`, `allure-report`, `coverage`, `mochawesome`, `screenshots`) under `reports/`
-- Simplified `.gitignore` to a single `reports` entry
-- Removed redundant comments and dead code across all files
+- Consolidated all generated output under `reports/`
 
 ### `feature/allure-report`
 - Integrated Allure reporting (`allure-commandline`, `@wdio/allure-reporter`)
@@ -260,18 +324,15 @@ E2E specs are excluded because they require the WDIO runtime (`browser` global) 
 
 ### `feature/advanced-wdio-commands`
 - Added `advanced-commands.spec.js` with 8 advanced WDIO command tests
-- Added `advanced` npm script
 
 ### `feature/wdio-basic-commands`
 - Added `basic-commands.spec.js` with 9 basic WDIO command tests
-- Added `wdio`, `basic`, `test:all` npm scripts
 
 ### `test/first-e2e-test`
 - Added first E2E test validating `https://www.epam.com` title
 
 ### `chore/wdio-setup`
 - Installed and configured WebdriverIO with Mocha framework and spec reporter
-- Added `eslint-plugin-wdio`
 
 ### `initial commit`
 - Project scaffolding: ESLint (airbnb-base), Mocha, Chai, c8, Mochawesome
