@@ -1,3 +1,4 @@
 node_modules
 reports
 configs/wdio.conf.js
+configs/wdio.cucumber.conf.js

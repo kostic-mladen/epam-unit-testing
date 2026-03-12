@@ -20,6 +20,17 @@
         {
             "files": ["test/e2e-tests/**/*.js", "src/pages/**/*.js"],
             "extends": ["plugin:wdio/recommended"]
+        },
+        {
+            "files": [
+                "test/step-definitions/**/*.js",
+                "test/support/**/*.js",
+                "test/features/**/*.js"
+            ],
+            "extends": ["plugin:wdio/recommended"],
+            "rules": {
+                "no-unused-expressions": "off"
+            }
         }
     ]
 }
