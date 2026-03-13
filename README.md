@@ -54,6 +54,12 @@ epam-taf-js-practice/
 │   ├── coverage/                     # c8 coverage HTML report
 │   ├── mochawesome/                  # Mochawesome HTML report
 │   └── screenshots/                  # Failure screenshots
+├── .husky/
+│   ├── pre-commit                    # Runs lint before every commit
+│   └── pre-push                      # Runs unit tests + coverage before every push
+├── .github/
+│   └── workflows/
+│       └── ci.yml                    # GitHub Actions CI pipeline
 ├── .gitignore
 ├── package.json
 └── README.md
@@ -126,6 +132,7 @@ Represents `https://www.epam.com`.
 | [c8](https://github.com/bcoe/c8) | Code coverage (V8-native) |
 | [ESLint](https://eslint.org/) | Linter (airbnb-base) |
 | [Mochawesome](https://github.com/adamgruber/mochawesome) | HTML test reporter |
+| [Husky](https://typicode.github.io/husky/) | Git hooks — enforces lint on commit, tests on push |
 
 ### E2E Testing (Mocha)
 
@@ -145,6 +152,12 @@ Represents `https://www.epam.com`.
 | [@wdio/cucumber-framework](https://webdriver.io/docs/frameworks#using-cucumber) | Cucumber integration for WDIO |
 | [@cucumber/cucumber](https://github.com/cucumber/cucumber-js) | Cucumber.js core |
 | [cross-env](https://github.com/kentcdodds/cross-env) | Cross-platform env variables (tag filtering) |
+
+### CI/CD
+
+| Tool | Purpose |
+|---|---|
+| [GitHub Actions](https://github.com/features/actions) | Cloud CI pipeline — lint, unit tests, BDD tests on every push/PR |
 
 ---
 
@@ -203,6 +216,62 @@ Opens `reports/allure-report/` in the browser. The report is auto-generated afte
 
 ```bash
 npm run lint
+```
+
+### Run tests without lint (used by pre-push hook)
+
+```bash
+npm run test:only
+```
+
+Runs Mocha unit tests + coverage report, skipping the ESLint `pretest` step.
+
+---
+
+## CI/CD — GitHub Actions
+
+The pipeline is defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) and runs automatically on every **push** and **pull request** to `master`.
+
+### What runs
+
+| Step | Command | Purpose |
+|---|---|---|
+| Lint | `npm run lint` | ESLint — fails fast on code style errors |
+| Unit tests + coverage | part of `test:all:bdd` | Mocha + c8 coverage with thresholds |
+| BDD tests | part of `test:all:bdd` | Cucumber scenarios in Chrome + Firefox (headless) |
+
+### Artifacts uploaded after every run
+
+| Artifact | Path | Contents |
+|---|---|---|
+| `coverage-report` | `reports/coverage/` | c8 HTML coverage report |
+| `allure-results` | `reports/allure-results/` | Raw Allure test results |
+| `screenshots` | `reports/screenshots/` | Failure screenshots from BDD scenarios |
+
+### Environment
+
+| Setting | Value | Reason |
+|---|---|---|
+| Runner | `ubuntu-latest` | Cheapest runner (1× cost), Chrome pre-installed |
+| Node.js | 20 | LTS — matches local dev |
+| `CI=true` | set in workflow `env` | Triggers headless mode in `wdio.cucumber.conf.js` |
+| Firefox | installed via `apt-get` | Not pre-installed on ubuntu-latest, required for parallel browser testing |
+
+---
+
+## Git Hooks (Husky)
+
+[Husky](https://typicode.github.io/husky/) manages Git hooks committed to the repo. Hooks are installed automatically on `npm install` via the `prepare` script.
+
+| Hook | Trigger | Command | Blocks |
+|---|---|---|---|
+| `pre-commit` | `git commit` | `npm run lint` | Commits with ESLint errors |
+| `pre-push` | `git push` | `npm run test:only` | Pushes with failing tests or coverage below threshold |
+
+**Bypass** (use only for genuine WIPs):
+```bash
+git commit --no-verify -m "wip"
+git push --no-verify
 ```
 
 ---
@@ -305,6 +374,21 @@ E2E specs are excluded because they require the WDIO runtime (`browser` global).
 ---
 
 ## Changelog
+
+### `feature/github-actions`
+- Added `.github/workflows/ci.yml` — GitHub Actions CI pipeline
+- Pipeline runs on every push and PR to `master`
+- Steps: lint → unit tests + coverage + BDD tests (`npm run test:all:bdd`)
+- `CI=true` env var enables headless Chrome and Firefox in `wdio.cucumber.conf.js`
+- Firefox installed via `apt-get` (Chrome is pre-installed on `ubuntu-latest`)
+- Artifacts uploaded after every run: coverage report, Allure results, failure screenshots
+
+### `chore/husky-git-hooks`
+- Added Husky v9 for Git hook management
+- `pre-commit` hook runs `npm run lint` — blocks commits with ESLint errors
+- `pre-push` hook runs `npm run test:only` — blocks pushes with failing tests or coverage below threshold
+- Added `test:only` script — runs Mocha + coverage without the `pretest` lint step (avoids duplicate lint on push)
+- Added `husky` to `devDependencies` with `prepare` script for automatic hook installation
 
 ### `chore/fix-eslint-and-bdd`
 - Added `login.feature` (smoke + regression negative scenarios for login page)
