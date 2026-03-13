@@ -17,6 +17,7 @@
   "scripts": {
     "pretest": "eslint ./ --config configs/.eslintrc.json --ignore-path configs/.eslintignore",
     "test": "c8 --reporter=none --config ./configs/c8rc.json mocha --config ./configs/.mocharc.json",
+    "test:only": "c8 --reporter=none --config ./configs/c8rc.json mocha --config ./configs/.mocharc.json && c8 report --config ./configs/c8rc.json",
     "posttest": "c8 report --config ./configs/c8rc.json",
     "lint": "eslint ./ --fix --config configs/.eslintrc.json --ignore-path configs/.eslintignore",
     "wdio": "wdio run ./configs/wdio.conf.js",
