@@ -31,6 +31,7 @@ epam-taf-js-practice/
 │   │   ├── basic-commands.spec.js    # E2E — basic WDIO commands
 │   │   └── advanced-commands.spec.js # E2E — advanced WDIO commands
 │   ├── features/
+│   │   ├── login.feature             # BDD — login page (smoke + negative)
 │   │   ├── epam-home.feature         # BDD — EPAM homepage
 │   │   ├── browser-basic.feature     # BDD — basic browser commands
 │   │   └── browser-advanced.feature  # BDD — advanced browser commands
@@ -210,6 +211,7 @@ npm run lint
 
 | Feature file | Scenarios | Tags |
 |---|---|---|
+| `test/features/login.feature` | Successful login, invalid username, invalid password | `@smoke`, `@regression`, `@negative` |
 | `test/features/epam-home.feature` | EPAM homepage title validation | `@smoke` |
 | `test/features/browser-basic.feature` | Element queries, clicks, setValue, addValue, waiting | `@smoke`, `@regression` |
 | `test/features/browser-advanced.feature` | JS execution, cookies, attributes, properties | `@regression` |
@@ -221,6 +223,10 @@ npm run lint
 | `@smoke` | Critical path — fast sanity check |
 | `@regression` | Full regression suite |
 | `@negative` | Error and validation scenarios |
+| `@login` | Login feature scenarios |
+| `@epam-home` | EPAM homepage scenarios |
+| `@browser-basic` | Basic browser command scenarios |
+| `@browser-advanced` | Advanced browser command scenarios |
 
 ### Cucumber configuration — `configs/wdio.cucumber.conf.js`
 
@@ -293,11 +299,22 @@ E2E specs are excluded because they require the WDIO runtime (`browser` global).
 
 - Extends **airbnb-base**
 - Environment: CommonJS, ES2021, Mocha
-- `test/e2e-tests/**`, `src/pages/**`, `test/step-definitions/**` and `test/support/**` use `plugin:wdio/recommended` for WDIO globals (`browser`, `$`, `$$`, `expect`, etc.)
+- `test/e2e-tests/**`, `src/pages/**`, `test/step-definitions/**`, `test/support/**`, and `configs/wdio*.conf.js` use `plugin:wdio/recommended` for WDIO globals (`browser`, `$`, `$$`, `expect`, etc.)
+- `configs/wdio*.conf.js` also allows `devDependencies` imports (Allure, glob)
 
 ---
 
 ## Changelog
+
+### `chore/fix-eslint-and-bdd`
+- Added `login.feature` (smoke + regression negative scenarios for login page)
+- Fixed missing `await` before `expect()` calls in `browser-commands.steps.js`
+- Fixed `hooks.js` scenario failure check (`status === 'FAILED'` → `!result.passed`)
+- Fixed indentation across all step definitions, support files, and WDIO configs (4-space → 2-space)
+- Fixed `consistent-return` in `onComplete` Allure report handlers
+- Added ESLint override for `configs/wdio*.conf.js` (WDIO globals + devDependency imports allowed)
+- Removed WDIO config files from `.eslintignore` — now linted consistently by both IDE and CLI
+- Added `glob` to `devDependencies`
 
 ### `feature/BDD-framework`
 - Added Cucumber BDD framework alongside the existing Mocha E2E setup

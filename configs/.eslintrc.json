@@ -31,6 +31,13 @@
             "rules": {
                 "no-unused-expressions": "off"
             }
+        },
+        {
+            "files": ["wdio*.conf.js"],
+            "extends": ["plugin:wdio/recommended"],
+            "rules": {
+                "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+            }
         }
     ]
 }
