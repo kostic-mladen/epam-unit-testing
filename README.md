@@ -54,6 +54,9 @@ epam-taf-js-practice/
 │   ├── coverage/                     # c8 coverage HTML report
 │   ├── mochawesome/                  # Mochawesome HTML report
 │   └── screenshots/                  # Failure screenshots
+├── .husky/
+│   ├── pre-commit                    # Runs lint before every commit
+│   └── pre-push                      # Runs unit tests + coverage before every push
 ├── .gitignore
 ├── package.json
 └── README.md
@@ -126,6 +129,7 @@ Represents `https://www.epam.com`.
 | [c8](https://github.com/bcoe/c8) | Code coverage (V8-native) |
 | [ESLint](https://eslint.org/) | Linter (airbnb-base) |
 | [Mochawesome](https://github.com/adamgruber/mochawesome) | HTML test reporter |
+| [Husky](https://typicode.github.io/husky/) | Git hooks — enforces lint on commit, tests on push |
 
 ### E2E Testing (Mocha)
 
@@ -203,6 +207,31 @@ Opens `reports/allure-report/` in the browser. The report is auto-generated afte
 
 ```bash
 npm run lint
+```
+
+### Run tests without lint (used by pre-push hook)
+
+```bash
+npm run test:only
+```
+
+Runs Mocha unit tests + coverage report, skipping the ESLint `pretest` step.
+
+---
+
+## Git Hooks (Husky)
+
+[Husky](https://typicode.github.io/husky/) manages Git hooks committed to the repo. Hooks are installed automatically on `npm install` via the `prepare` script.
+
+| Hook | Trigger | Command | Blocks |
+|---|---|---|---|
+| `pre-commit` | `git commit` | `npm run lint` | Commits with ESLint errors |
+| `pre-push` | `git push` | `npm run test:only` | Pushes with failing tests or coverage below threshold |
+
+**Bypass** (use only for genuine WIPs):
+```bash
+git commit --no-verify -m "wip"
+git push --no-verify
 ```
 
 ---
@@ -305,6 +334,13 @@ E2E specs are excluded because they require the WDIO runtime (`browser` global).
 ---
 
 ## Changelog
+
+### `chore/husky-git-hooks`
+- Added Husky v9 for Git hook management
+- `pre-commit` hook runs `npm run lint` — blocks commits with ESLint errors
+- `pre-push` hook runs `npm run test:only` — blocks pushes with failing tests or coverage below threshold
+- Added `test:only` script — runs Mocha + coverage without the `pretest` lint step (avoids duplicate lint on push)
+- Added `husky` to `devDependencies` with `prepare` script for automatic hook installation
 
 ### `chore/fix-eslint-and-bdd`
 - Added `login.feature` (smoke + regression negative scenarios for login page)
